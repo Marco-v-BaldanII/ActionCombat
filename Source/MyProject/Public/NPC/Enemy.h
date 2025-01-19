@@ -21,6 +21,9 @@ class MYPROJECT_API AEnemy : public ANPC , public IHealth , public ILock
 public:
 	AEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	UWidgetComponent* DamageText;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets")
 	UWidgetComponent* LockWidget;
 
@@ -48,6 +51,14 @@ public:
 
 	void ResizeHealthBar(int hp);
 
+
+	UFUNCTION()
+	void OnSwordHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CapsuleCollision")
+	//UCapsuleComponent* CapsuleKomponent;
 private:
 	bool isDead = false;
 };
