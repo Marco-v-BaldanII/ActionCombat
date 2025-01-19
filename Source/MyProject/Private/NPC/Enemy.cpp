@@ -8,6 +8,9 @@ AEnemy::AEnemy() {
 	// Createand attach the HealthBar component
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
 	HealthBar->SetupAttachment(RootComponent);
+
+	LockWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("LockWidget"));
+	LockWidget->SetupAttachment(RootComponent);
 }
 
 void AEnemy::ResizeHealthBar(int hp) {
@@ -70,4 +73,10 @@ void AEnemy::PlayHitMontage() {
 
 bool AEnemy::IsDead() {
 	return isDead;
+}
+
+void AEnemy::ShowLocked(bool visible) {
+	if (LockWidget) {
+		LockWidget->SetVisibility(visible);
+	}
 }

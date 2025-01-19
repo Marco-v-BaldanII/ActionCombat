@@ -2,6 +2,8 @@
 
 #include "RPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interfaces/Lock.h"
+#include "Interfaces/Health.h"
 
 // Sets default values
 ARPGCharacter::ARPGCharacter()
@@ -18,6 +20,16 @@ ARPGCharacter::ARPGCharacter()
 	FollowCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName);
 
 	cameraBoom->TargetArmLength = 300.0f;
+
+	//----------Enemy Lock Box-------------//
+	EnemyLockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyLockBox"));
+	// Attach it to the cameraBoom, not the root
+	EnemyLockBox->SetupAttachment(cameraBoom);
+	// Register the delegates
+	EnemyLockBox->OnComponentBeginOverlap.AddDynamic(this, &ARPGCharacter::OnLockBoxBeginOverlap);
+
+	EnemyLockBox->OnComponentEndOverlap.AddDynamic(this, &ARPGCharacter::OnLockBoxEndOverlap);
+
 }
 
 // Called when the game starts or when spawned
@@ -348,4 +360,34 @@ void ARPGCharacter::ClearTimer() {
 void ARPGCharacter::RestartTimer() {
 	GetWorld()->GetTimerManager().SetTimer(RegenerateStaminaTimerHandle, this, &ARPGCharacter::RegenerateStamina, 0.5f, true);
 	// basically Invoke, calls the method RegenerateStamina after 0.5 seconds
+}
+
+void ARPGCharacter::OnLockBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
+
+
+	IHealth* health = Cast<IHealth>(OtherActor);
+
+	if (health && !health->IsDead()) {
+		// Try getting the ILock interface
+		ILock* targetLock = Cast<ILock>(OtherActor);
+
+		// if the target implements the ILock
+		if (targetLock) {
+			targetLock->ShowLocked(true);
+			// Set the current target
+			currentTarget = OtherActor;
+		}
+	}
+}
+
+void ARPGCharacter::OnLockBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+
+	ILock* targetLock = Cast<ILock>(OtherActor);
+
+	if (targetLock) {
+		// Hide the widget
+		targetLock->ShowLocked(false);
+		// Reset the target
+		currentTarget = NULL;
+	}
 }

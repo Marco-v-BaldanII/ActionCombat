@@ -6,6 +6,7 @@
 #include "NPC/NPC.h"
 #include "Components/WidgetComponent.h"
 #include "Interfaces/Health.h"
+#include "Interfaces/Lock.h"
 #include "CharacterStats.h"
 #include "Enemy.generated.h"
 
@@ -13,12 +14,17 @@
  * 
  */
 UCLASS()
-class MYPROJECT_API AEnemy : public ANPC , public IHealth /* Implementing the IHealth interface */
+class MYPROJECT_API AEnemy : public ANPC , public IHealth , public ILock
 {
 	GENERATED_BODY()
 
 public:
 	AEnemy();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets")
+	UWidgetComponent* LockWidget;
+
+	void ShowLocked(bool visible) override;
 
 	UPROPERTY(Instanced, EditAnywhere, Category = "Stats")
 	UCharacterStats* Stats;

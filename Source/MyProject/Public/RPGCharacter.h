@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "CharacterStats.h"
 #include "UI/RPGHUD.h"
+#include "Components/BoxComponent.h"
 #include "RPGCharacter.generated.h" // this generated file must be the last include for some reason
 
 UCLASS()
@@ -21,6 +22,18 @@ class MYPROJECT_API ARPGCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ARPGCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnemyLock")
+	UBoxComponent* EnemyLockBox;
+
+	UFUNCTION()
+	void OnLockBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnLockBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	AActor* currentTarget;
+
 
 	UPROPERTY(Instanced, EditAnywhere, Category = "Stats") /* Instanced indicates that we can edit the Stats property in the editor , in this case add entries to the stats dictionary*/
 	UCharacterStats* Stats;
