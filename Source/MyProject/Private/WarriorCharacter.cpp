@@ -51,7 +51,7 @@ void AWarriorCharacter::LightAttack(const FInputActionValue& value) {
 	IsAttacking = true;
 
 	// if the sword is not laoded yet
-	/*if (!IsRightHandWeaponLoaded) {
+	if (!IsRightHandWeaponLoaded) {
 		// Set the current combo type
 		CurrentComboType = EComboTypes::LightMelee;
 		// Play the draw a sowrd montage
@@ -60,7 +60,7 @@ void AWarriorCharacter::LightAttack(const FInputActionValue& value) {
 		}
 	}
 		// if the sword attack montage is not playing yet
-	else*/ if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(GreatSwordSlashMontage) == false) {
+	else if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(GreatSwordSlashMontage) == false) {
 
 		if (IsValid(GreatSwordSlashMontage)) {
 
@@ -86,7 +86,7 @@ void AWarriorCharacter::HeavyAttack(const FInputActionValue& value) {
 	IsAttacking = true;
 
 	// if the sword is not laoded yet
-	/*if (!IsRightHandWeaponLoaded) {
+	if (!IsRightHandWeaponLoaded) {
 		// Set the current combo type
 		CurrentComboType = EComboTypes::HeavyMelee;
 		// Play the draw a sowrd montage
@@ -94,7 +94,7 @@ void AWarriorCharacter::HeavyAttack(const FInputActionValue& value) {
 			PlayAnimMontage(DrawASwordMontage);
 		}
 	}
-	else */if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(GreatSwordSlashMontage) == false) {
+	else if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(GreatSwordSlashMontage) == false) {
 
 		if (IsValid(GreatSwordSlashMontage)) {
 
@@ -144,54 +144,54 @@ void AWarriorCharacter::PlayComboMontage(FName section, UAnimMontage* montage, f
 
 void AWarriorCharacter::EquipAGrateSword() {
 	//Load the great sword
-	//RightHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "RightHandSwordSocket");
+	RightHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "RightHandSwordSocket");
 
-	//const FTransform swordMountTransform(RightHandWeaponMountRotation);
-	//RightHandWeapon->SetRelativeTransform(swordMountTransform);
+	const FTransform swordMountTransform(RightHandWeaponMountRotation);
+	RightHandWeapon->SetRelativeTransform(swordMountTransform);
 
-	//IsRightHandWeaponLoaded = true;
+	IsRightHandWeaponLoaded = true;
 }
 
 void AWarriorCharacter::UnloadAGreatSword() {
 	
-	//if (IsRightHandWeaponLoaded) {
+	if (IsRightHandWeaponLoaded) {
 
-	//	RightHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponRestSocket");
-	//	const FTransform swordMountTransform(WeaponRestRotation);
-	//	RightHandWeapon->SetRelativeTransform(swordMountTransform); //CHANGE o rest
+		RightHandWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponRestSocket");
+		const FTransform swordMountTransform(WeaponRestRotation);
+		RightHandWeapon->SetRelativeTransform(swordMountTransform); //CHANGE o rest
 
-	//	IsRightHandWeaponLoaded = false;
-	//}
+		IsRightHandWeaponLoaded = false;
+	}
 }
 
 void AWarriorCharacter::DrawAGreatSwordNotify() {
 	// If the sword is not loaded and we're playing the attack montage
-	//if (!IsRightHandWeaponLoaded && CurrentComboType != EComboTypes::Empty) {
+	if (!IsRightHandWeaponLoaded && CurrentComboType != EComboTypes::Empty) {
 
-	//	EquipAGrateSword();
+		EquipAGrateSword();
 
-	//	// Determine which combo to play, heavy or light
-	//	if (CurrentComboType == EComboTypes::LightMelee) {
-	//		LightAttack(0);
-	//	}
-	//	else if (CurrentComboType == EComboTypes::HeavyMelee) {
-	//		HeavyAttack(0);
-	//	}
-	//	//Reset current atk to empty
-	//	CurrentComboType = EComboTypes::Empty;
-	//}
+		// Determine which combo to play, heavy or light
+		if (CurrentComboType == EComboTypes::LightMelee) {
+			LightAttack(0);
+		}
+		else if (CurrentComboType == EComboTypes::HeavyMelee) {
+			HeavyAttack(0);
+		}
+		//Reset current atk to empty
+		CurrentComboType = EComboTypes::Empty;
+	}
 }
 
 void AWarriorCharacter::UnloadAGreatSwordNotify(bool playMontage) {
 
-	//if (IsRightHandWeaponLoaded) {
-	//	if (playMontage && IsValid(UnloadSwordMontage)) {
-	//		// unload sword to transition to idle/walk
-	//		PlayAnimMontage(UnloadSwordMontage);
-	//	}
-	//	else {
-	//		// The montage is playing, unlaod the sword directly
-	//		UnloadAGreatSword();
-	//	}
-	//}
+	if (IsRightHandWeaponLoaded) {
+		if (playMontage && IsValid(UnloadSwordMontage)) {
+			// unload sword to transition to idle/walk
+			PlayAnimMontage(UnloadSwordMontage);
+		}
+		else {
+			// The montage is playing, unlaod the sword directly
+			UnloadAGreatSword();
+		}
+	}
 }
