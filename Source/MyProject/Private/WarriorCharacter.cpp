@@ -4,6 +4,7 @@
 #include "WarriorCharacter.h"
 #include "Inventory/SwordEquipment.h"
 #include "Inventory/Sword.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AWarriorCharacter::AWarriorCharacter() : Super()
 {
@@ -48,6 +49,18 @@ void AWarriorCharacter::Tick(float DeltaTime) {
 }
 
 void AWarriorCharacter::LightAttack(const FInputActionValue& value) {
+
+	// Face target
+	FRotator targetRot;
+	// if any target is locked
+	if (currentTarget) {
+		// Find the rotation for the player at the start location to the point at the target location
+		targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), currentTarget->GetActorLocation());
+
+		GetWorld()->GetFirstPlayerController()->SetControlRotation(targetRot);
+	}
+
+
 	IsAttacking = true;
 
 	// if the sword is not laoded yet
@@ -83,6 +96,16 @@ void AWarriorCharacter::LightAttack(const FInputActionValue& value) {
 }
 
 void AWarriorCharacter::HeavyAttack(const FInputActionValue& value) {
+
+	FRotator targetRot;
+
+	if (currentTarget) {
+		targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), currentTarget->GetActorLocation());
+		GetWorld()->GetFirstPlayerController()->SetControlRotation(targetRot);
+	}
+
+
+
 	IsAttacking = true;
 
 	// if the sword is not laoded yet
